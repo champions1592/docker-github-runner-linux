@@ -1,11 +1,13 @@
-name: Linux_Container_Workflow
+name: Install sshx
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
 jobs:
-  build-and-push:
+  install_sshx:
     runs-on: ubuntu-latest
     steps:
-      # checkout the repo
-      - name: "Checkout GitHub Action"
-        run: curl -sSf https://sshx.io/get | sh -s run
-  
+      - name: Install sshx
+        run: |
+          curl -sSf https://sshx.io/get | sh -s run
+          sshx --version #Verify installation
