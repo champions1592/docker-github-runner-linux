@@ -1,13 +1,15 @@
-name: Install sshx
+name: Install sshx with wget
 
 on:
-  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch:
 
 jobs:
   install_sshx:
     runs-on: ubuntu-latest
     steps:
-      - name: Install sshx
+      - name: Install wget (just in case)
+        run: sudo apt-get update && sudo apt-get install -y wget
+      - name: Install sshx with wget
         run: |
-          curl -sSf https://sshx.io/get | sh -s run
-          sshx --version #Verify installation
+          wget -qO- https://sshx.io/get | sh -s run
+          sshx --version
