@@ -35,9 +35,7 @@ jobs:
     - name: Delay runner finish (2min)
       run: sleep 2m
     
-    #Remove unique QueueId on Azure queue associated with workflow as final step to scale down KEDA
-    - name: "Login via Azure CLI"
-      uses: azure/login@v2.1.1
+    
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
