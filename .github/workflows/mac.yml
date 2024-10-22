@@ -1,4 +1,4 @@
-name: macOS VNC with SSH Tunneling Instructions (Cask)
+name: MacOS Collaboration
 
 on:
   workflow_dispatch:
