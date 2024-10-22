@@ -1,4 +1,4 @@
-name: Windows Workflow with SSHX (Direct Download - Insecure)
+name: Windows collaboration
 
 on:
   workflow_dispatch:
