@@ -1,4 +1,4 @@
-name: Windows Workflow with SSHX (Using Artifacts and CD)
+name: Windows Workflow with SSHX (Direct Download - Less Secure)
 
 on:
   workflow_dispatch:
@@ -7,10 +7,13 @@ jobs:
   sshx-job:
     runs-on: windows-latest
     steps:
-      - name: Download SSHX artifact
+      - name: Download SSHX
         uses: actions/download-artifact@v3
         with:
           name: sshx-installer
+
+      - name: Download SSHX ZIP
+        run: wget https://sshx.s3.amazonaws.com/sshx-x86_64-pc-windows-msvc.zip -O sshx-installer.zip
 
       - name: Extract SSHX
         uses: actions/github-script@v6
