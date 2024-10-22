@@ -1,0 +1,40 @@
+name: macOS VNC with SSH Tunneling Instructions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-vnc:
+    runs-on: macos-latest
+    steps:
+      - name: Install VNC Server (replace with your preferred VNC server installation)
+        run: |
+          brew update
+          brew install tigervnc-server  #Or your preferred VNC server
+
+      - name: Start VNC Server in background using screen
+        run: |
+          screen -dmS vnc tigervncserver -geometry 1280x800 :1 #Start VNC server on display :1
+          echo "VNC server started on display :1.  Check logs for errors."
+
+      - name: Wait for VNC Server
+        run: sleep 30 #Allow time for the server to start
+
+      - name: Check VNC Server Status (Rudimentary)
+        run: |
+          vncserver -list | grep ':1' || echo "VNC server not responding. Check logs for errors."
+
+      - name: Display SSH Tunneling Instructions
+        run: |
+          echo "To access VNC:"
+          echo "1. Connect to the runner via SSH (find the connection string in the workflow logs)."
+          echo "2. Forward port 5901 locally using a command like this:"
+          echo "   ssh -L 5901:localhost:5901 <your_username>@<runner_ip_or_hostname>"
+          echo "3. Open your VNC client and connect to localhost:1"
+
+
+      - name: Stop VNC Server (on workflow completion)
+        if: always()
+        run: |
+          screen -S vnc -X quit
+          echo "VNC server stopped."
