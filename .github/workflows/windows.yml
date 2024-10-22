@@ -1,0 +1,39 @@
+name: Windows Workflow with SSHX (Using Artifacts and CD)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sshx-job:
+    runs-on: windows-latest
+    steps:
+      - name: Download SSHX artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: sshx-installer
+
+      - name: Extract SSHX
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const core = require('@actions/core');
+            const fs = require('fs');
+            const path = require('path');
+            const AdmZip = require('adm-zip');
+
+            const zipPath = path.join(process.env.GITHUB_WORKSPACE, 'sshx-installer.zip');
+            const extractPath = path.join(process.env.GITHUB_WORKSPACE, 'sshx');
+
+            const zip = new AdmZip(zipPath);
+            zip.extractAllTo(extractPath, true);
+
+            core.exportVariable('SSHX_PATH', extractPath);
+
+      - name: Install Node.js dependencies (if needed by your SSHX command)
+        run: npm install adm-zip
+
+      - name: Change to SSHX directory
+        run: cd ${{ env.SSHX_PATH }}
+
+      - name: Run SSHX command
+        run: sshx.exe 
