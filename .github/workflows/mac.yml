@@ -1,4 +1,4 @@
-name: macOS VNC with SSH Tunneling Instructions
+name: macOS VNC with SSH Tunneling Instructions (Cask)
 
 on:
   workflow_dispatch:
@@ -7,34 +7,37 @@ jobs:
   setup-vnc:
     runs-on: macos-latest
     steps:
-      - name: Install VNC Server (replace with your preferred VNC server installation)
-        run: |
-          brew update
-          brew install --cask tigervnc-server  #Or your preferred VNC server
+      - name: Install Homebrew Cask
+        run: brew tap homebrew/cask
 
-      - name: Start VNC Server in background using screen
-        run: |
-          screen -dmS vnc tigervncserver -geometry 1280x800 :1 #Start VNC server on display :1
-          echo "VNC server started on display :1.  Check logs for errors."
+      - name: Install TigerVNC using Cask
+        run: brew install --cask tigervnc
 
-      - name: Wait for VNC Server
-        run: sleep 30 #Allow time for the server to start
-
-      - name: Check VNC Server Status (Rudimentary)
+      - name: Start VNC Server (Cask method - less reliable)
         run: |
-          vncserver -list | grep ':1' || echo "VNC server not responding. Check logs for errors."
+          open -a "TigerVNC Viewer"  #This is a workaround; it's not ideal for server management
+          echo "Attempting to start VNC server.  This method is less reliable than using tigervncserver directly."
+          sleep 30  #Give time for the server to start (this is a guess and might need adjustment)
+
+
+      - name: Check VNC Server Status (Rudimentary - may not be reliable)
+        run: |
+          #Checking the status with Cask is difficult.  This is a very rudimentary check.
+          lsof -i :5901 > /dev/null 2>&1 && echo "VNC server seems to be running (Rudimentary check)" || echo "VNC server not responding (Rudimentary check). Check logs for errors."
+
 
       - name: Display SSH Tunneling Instructions
         run: |
-          echo "To access VNC:"
+          echo "To access VNC (if started successfully):"
           echo "1. Connect to the runner via SSH (find the connection string in the workflow logs)."
           echo "2. Forward port 5901 locally using a command like this:"
           echo "   ssh -L 5901:localhost:5901 <your_username>@<runner_ip_or_hostname>"
           echo "3. Open your VNC client and connect to localhost:1"
 
 
-      - name: Stop VNC Server (on workflow completion)
+      - name: Stop VNC Server (Attempt - may not be reliable)
         if: always()
         run: |
-          screen -S vnc -X quit
-          echo "VNC server stopped."
+          #Stopping the server cleanly with Cask is difficult. This is a best effort attempt.
+          killall -9 tigervncserver #Force kill (use with caution!)
+          echo "Attempting to stop VNC server.  This method is less reliable than using screen."
