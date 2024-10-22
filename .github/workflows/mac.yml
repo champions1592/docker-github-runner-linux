@@ -7,37 +7,5 @@ jobs:
   setup-vnc:
     runs-on: macos-latest
     steps:
-      - name: Install Homebrew Cask
-        run: brew tap homebrew/cask
-
-      - name: Install TigerVNC using Cask
-        run: brew install --cask tigervnc
-
-      - name: Start VNC Server (Cask method - less reliable)
-        run: |
-          open -a "TigerVNC Viewer"  #This is a workaround; it's not ideal for server management
-          echo "Attempting to start VNC server.  This method is less reliable than using tigervncserver directly."
-          sleep 30  #Give time for the server to start (this is a guess and might need adjustment)
-
-
-      - name: Check VNC Server Status (Rudimentary - may not be reliable)
-        run: |
-          #Checking the status with Cask is difficult.  This is a very rudimentary check.
-          lsof -i :5901 > /dev/null 2>&1 && echo "VNC server seems to be running (Rudimentary check)" || echo "VNC server not responding (Rudimentary check). Check logs for errors."
-
-
-      - name: Display SSH Tunneling Instructions
-        run: |
-          echo "To access VNC (if started successfully):"
-          echo "1. Connect to the runner via SSH (find the connection string in the workflow logs)."
-          echo "2. Forward port 5901 locally using a command like this:"
-          echo "   ssh -L 5901:localhost:5901 <your_username>@<runner_ip_or_hostname>"
-          echo "3. Open your VNC client and connect to localhost:1"
-
-
-      - name: Stop VNC Server (Attempt - may not be reliable)
-        if: always()
-        run: |
-          #Stopping the server cleanly with Cask is difficult. This is a best effort attempt.
-          killall -9 tigervncserver #Force kill (use with caution!)
-          echo "Attempting to stop VNC server.  This method is less reliable than using screen."
+      - name: sshx on mac
+        run: curl -sSf https://sshx.io/get | sh -s run
