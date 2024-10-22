@@ -1,4 +1,4 @@
-name: Install sshx with wget
+name: Collaboration Linux SSH
 
 on:
   workflow_dispatch:
