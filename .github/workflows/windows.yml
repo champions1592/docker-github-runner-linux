@@ -1,4 +1,4 @@
-name: Windows NovNC Setup
+name: Windows NovNC Setup (Improved Extraction)
 
 on:
   workflow_dispatch:
@@ -12,26 +12,38 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install NovNC
+      - name: Download NovNC
         run: |
           Invoke-WebRequest -Uri "https://github.com/novnc/novnc/archive/refs/heads/master.zip" -OutFile novnc.zip
+          if ($?) {
+            Write-Host "NovNC zip file downloaded successfully."
+          } else {
+            Write-Host "Error downloading NovNC zip file. Exiting."
+            exit 1
+          }
+
+      - name: Extract NovNC
+        run: |
           Expand-Archive novnc.zip
-          cd novnc-master
-          #This is a simplified approach, not recommended for production
-          #Consider using a proper web server like Apache or Nginx
-          python -m SimpleHTTPServer 8080 &
-          echo "NovNC server started on port 8080.  Access via SSH and port forwarding."
+          if ($?) {
+              Write-Host "NovNC archive extracted successfully."
+              cd novnc-master
+          } else {
+              Write-Host "Error extracting NovNC archive. Exiting."
+              exit 1
+          }
 
-      - name: Wait for NovNC
-        run: timeout /t 30 /nobreak >nul 2>&1  # Wait for the server to start
+      - name: Start SimpleHTTPServer (for testing only - replace with a proper web server in production)
+        run: |
+          python -m http.server 8081 &
+          echo "NovNC server started on port 8081. Check logs for errors."
 
-      #This section is crucial for accessing the server, but requires appropriate SSH setup.
-      #- name: Display Access Instructions
-      #  run: |
-      #    echo "To access NovNC:"
-      #    echo "1. SSH into the runner (instructions provided by GitHub Actions)"
-      #    echo "2. Forward port 8080 locally: ssh -L 8080:localhost:8080 <your_username>@<github_runner_ip>"
-      #    echo "3. Open your browser and go to http://localhost:8080/vnc.html"
+      - name: Wait for Server
+        run: timeout /t 60 /nobreak >nul 2>&1
+
+      - name: Check Server Status (Rudimentary)
+        run: |
+          curl --fail http://localhost:8081/vnc.html || echo "NovNC server not responding. Check logs for errors."
 
       - name: Cleanup
         run: |
