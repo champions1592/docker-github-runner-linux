@@ -10,7 +10,7 @@ jobs:
       - name: Install VNC Server (replace with your preferred VNC server installation)
         run: |
           brew update
-          brew install tigervnc-server  #Or your preferred VNC server
+          brew install --cask tigervnc-server  #Or your preferred VNC server
 
       - name: Start VNC Server in background using screen
         run: |
