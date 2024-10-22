@@ -1,0 +1,38 @@
+name: Windows NovNC Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-novnc:
+    runs-on: windows-latest
+    steps:
+      - name: Install Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install NovNC
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/novnc/novnc/archive/refs/heads/master.zip" -OutFile novnc.zip
+          Expand-Archive novnc.zip
+          cd novnc-master
+          #This is a simplified approach, not recommended for production
+          #Consider using a proper web server like Apache or Nginx
+          python -m SimpleHTTPServer 8080 &
+          echo "NovNC server started on port 8080.  Access via SSH and port forwarding."
+
+      - name: Wait for NovNC
+        run: timeout /t 30 /nobreak >nul 2>&1  # Wait for the server to start
+
+      #This section is crucial for accessing the server, but requires appropriate SSH setup.
+      #- name: Display Access Instructions
+      #  run: |
+      #    echo "To access NovNC:"
+      #    echo "1. SSH into the runner (instructions provided by GitHub Actions)"
+      #    echo "2. Forward port 8080 locally: ssh -L 8080:localhost:8080 <your_username>@<github_runner_ip>"
+      #    echo "3. Open your browser and go to http://localhost:8080/vnc.html"
+
+      - name: Cleanup
+        run: |
+          Remove-Item -Recurse -Force novnc-master novnc.zip
